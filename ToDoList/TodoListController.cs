@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ToDoList
 {
@@ -33,14 +32,11 @@ namespace ToDoList
         data = todoId,
         TimeStamp = DateTime.Now,
         Type = EventType.TodoDeleted,
-        
       };
 
       es.AddDeletedEvent(newEvent);
     }
-
   }
-
 
   public class Todo
   {
@@ -51,7 +47,6 @@ namespace ToDoList
     public Todo()
     {
       CreatedAt = DateTime.Now;
-      
     }
   }
 }
