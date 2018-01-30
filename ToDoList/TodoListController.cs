@@ -15,11 +15,11 @@ namespace ToDoList
 
     public void addTodo(Todo todo)
     {
-      TodoCreatedEvent newEvent = new TodoCreatedEvent()
+      CreatedEvent newEvent = new CreatedEvent()
       {
-        data = todo,
+        Data = todo,
         TimeStamp = DateTime.Now,
-        Type = EventType.TodoCreated,
+        Type = EventType.Created,
       };
 
       es.AddCreatedEvent(newEvent);
@@ -27,15 +27,21 @@ namespace ToDoList
 
     public void deleteTodo(int todoId)
     {
-      TodoDeletedEvent newEvent = new TodoDeletedEvent()
+      DeletedEvent newEvent = new DeletedEvent()
       {
-        data = todoId,
+        Data = todoId,
         TimeStamp = DateTime.Now,
-        Type = EventType.TodoDeleted,
+        Type = EventType.Deleted,
       };
 
       es.AddDeletedEvent(newEvent);
     }
+
+    public void Undo()
+    {
+      es.UndoLast();
+    }
+
   }
 
   public class Todo

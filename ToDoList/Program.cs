@@ -13,46 +13,67 @@ namespace ToDoList
                   new Todo()
                   {
                           Id = 0,
-                          Description = "test init",
+                          Description = "test0",
                           CreatedAt = DateTime.Now
                   }
           });
       var eventStore = new EventStore(todoDb);
       var controller = new TodoListController(eventStore);
 
-      controller.addTodo(new Todo()
-      {
-        Description = "test"
-      });
-
-      Task.Delay(2000).Wait();
-      controller.addTodo(new Todo()
-      {
-        Description = "test2"
-      });
-      controller.deleteTodo(0);
-
-      Console.WriteLine("show events");
-      foreach (var e in eventStore.GetEvents())
-      {
-        object data;
-        if (e.data is Todo)
-        {
-          data = (e.data as Todo).Description;
-        }
-        else
-        {
-          data = e.data;
-        }
-        Console.WriteLine($"Event Id: {e.Id}, Event Type:{e.Type}, Created at {e.TimeStamp}, data: {data}");
-      }
-      Console.WriteLine();
-      Console.WriteLine("show todos");
+      Console.WriteLine("initial todo list");
       foreach (var todo in todoDb)
       {
         Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
       }
 
+      controller.addTodo(new Todo()
+      {
+        Description = "test1"
+      });
+
+      Task.Delay(1000).Wait();
+      controller.addTodo(new Todo()
+      {
+        Description = "test2"
+      });
+
+      Task.Delay(1000).Wait();
+      controller.deleteTodo(0);
+
+
+      Console.WriteLine("\nAfter Add 2 todos, and delete first todo, Show todos");
+      foreach (var todo in todoDb)
+      {
+        Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
+      }
+      Console.WriteLine("\nAfter undoLast, add , undo, Show todos");
+      controller.Undo();
+      controller.addTodo(new  Todo()
+      {
+              Description = "test3"
+      });
+      controller.Undo();
+      controller.Undo();
+
+      foreach (var todo in todoDb)
+      {
+        Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
+      }
+
+      Console.WriteLine("\nShow events");
+      foreach (var e in eventStore.GetEvents())
+      {
+        object data;
+        if (e.Data is Todo)
+        {
+          data = (e.Data as Todo).Description;
+        }
+        else
+        {
+          data = e.Data;
+        }
+        Console.WriteLine($"Event Id: {e.Id}, Event Type:{e.Type}, Created at {e.TimeStamp}, data: {data}");
+      }
       Console.ReadKey();
     }
   }
