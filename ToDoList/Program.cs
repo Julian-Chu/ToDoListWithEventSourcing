@@ -17,7 +17,7 @@ namespace ToDoList
                           CreatedAt = DateTime.Now
                   }
           });
-      var eventStore = new EventStore(todoDb);
+      var eventStore = new EventHanlder(todoDb);
       var controller = new TodoListController(eventStore);
 
       Console.WriteLine("initial todo list");

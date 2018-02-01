@@ -5,12 +5,12 @@ using System.Linq;
 
 namespace ToDoList
 {
-  public class EventStore
+  public class EventHanlder
   {
-    private readonly List<IEvent> events = new List<IEvent>();
+    private readonly List<IEvent> eventStore = new List<IEvent>();
     private readonly List<Todo> todoRepo;
 
-    public EventStore(List<Todo> todoRepo)
+    public EventHanlder(List<Todo> todoRepo)
     {
       this.todoRepo = todoRepo;
     }
@@ -21,8 +21,8 @@ namespace ToDoList
       todo.Id = todoRepo.Count;
       todoRepo.Add(todo);
 
-      e.Id = events.Count;
-      events.Add(e);
+      e.Id = eventStore.Count;
+      eventStore.Add(e);
     }
 
     public void AddDeletedEvent(DeletedEvent e)
@@ -32,18 +32,18 @@ namespace ToDoList
       e.Data = target;
       todoRepo.Remove(target);
 
-      e.Id = events.Count;
-      events.Add(e);
+      e.Id = eventStore.Count;
+      eventStore.Add(e);
     }
 
     public IEnumerable<IEvent> GetEvents()
     {
-      return events;
+      return eventStore;
     }
 
     public void UndoLast()
     {
-      var e = events.LastOrDefault(o => o.Type != EventType.Undo);
+      var e = eventStore.LastOrDefault(o => o.Type != EventType.Undo);
       var data = e.Data as Todo;
       switch (e.Type)
       {
@@ -56,9 +56,9 @@ namespace ToDoList
         default:
           break;
       }
-      events.Add(new UndoEvent()
+      eventStore.Add(new UndoEvent()
       {
-        Id = events.Count,
+        Id = eventStore.Count,
         Type = EventType.Undo,
         Data = e,
         TimeStamp = DateTime.Now

@@ -6,9 +6,9 @@ namespace ToDoList
   public class TodoListController
   {
     private List<Todo> TodoRepo;
-    private readonly EventStore es;
+    private readonly EventHanlder es;
 
-    public TodoListController(EventStore es)
+    public TodoListController(EventHanlder es)
     {
       this.es = es;
     }
