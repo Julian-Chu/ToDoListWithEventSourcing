@@ -43,17 +43,18 @@ namespace ToDoList
 
     public void Undo()
     {
-      var undoEvent = eventStore.LastOrDefault(o => o.Type != EventType.Undo);
+      var eventToUndo = eventStore.LastOrDefault(o => o.Type != EventType.Undo);
 
-      eventStore.Add(new UndoEvent()
+      var undoEvent = new UndoEvent()
       {
               Id = eventStore.Count,
               Type = EventType.Undo,
-              Data = undoEvent,
+              Data = eventToUndo,
               TimeStamp = DateTime.Now
-      });
+      };
+      eventStore.Add(undoEvent);
 
-      hanlder.Undo(undoEvent);
+      hanlder.Handle(undoEvent);
     }
 
     private void SaveToEventStore(IEvent newEvent)

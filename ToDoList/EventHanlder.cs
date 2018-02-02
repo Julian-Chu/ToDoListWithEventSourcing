@@ -24,6 +24,10 @@ namespace ToDoList
       {
           AddDeletedEvent((DeletedEvent) e);
       }
+      else if (e is UndoEvent)
+      {
+           Undo(e);
+      }
       else
       {
         Console.WriteLine("unknow event");
@@ -36,24 +40,30 @@ namespace ToDoList
       todoRepo.Add(todo);
     }
 
-    private void AddDeletedEvent(IEvent e)
+    private void AddDeletedEvent(DeletedEvent e)
     {
-      var todoId = (int)e.Data;
+      //var todo = (Todo)e.Data;
+      var todoId =(int)e.Data;
       var target = todoRepo.SingleOrDefault(t => t.Id == todoId);
       e.Data = target;
       todoRepo.Remove(target);
     }
 
-    public void Undo(IEvent undoEvent)
+    private void Undo(IEvent undoEvent)
     {
-      var data = undoEvent.Data as Todo;
-      switch (undoEvent.Type)
+      var baseEvent = undoEvent.Data as BaseEvent;
+      Todo todo;
+      switch (baseEvent.Type)
       {
         case EventType.Created:
-          todoRepo.Remove(data);
+          var createdEvent = baseEvent as CreatedEvent;
+          todo = baseEvent.Data as Todo;
+          todoRepo.Remove(todo);
           break;
         case EventType.Deleted:
-          todoRepo.Insert(data.Id, data);
+          var deletedEvent = baseEvent as DeletedEvent;
+          todo = deletedEvent.Data as Todo;
+          todoRepo.Insert(todo.Id, todo);
           break;
         default:
           break;

@@ -47,14 +47,14 @@ namespace ToDoList
       {
         Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
       }
-      Console.WriteLine("\nAfter undoLast, add , undo, Show todos");
+      Console.WriteLine("\nAfter undo, add , undo, Show todos");
       controller.Undo();
       controller.AddTodo(new  Todo()
       {
               Description = "test3"
       });
       controller.Undo();
-      controller.Undo();
+      
 
       foreach (var todo in todoDb)
       {
