@@ -15,7 +15,7 @@ namespace ToDoList
       this.eventStore = eventStore;
     }
 
-    public void addTodo(Todo todo)
+    public void AddTodo(Todo todo)
     {
       CreatedEvent newEvent = new CreatedEvent()
       {
@@ -28,7 +28,7 @@ namespace ToDoList
       hanlder.Handle(newEvent);
     }
 
-    public void deleteTodo(int todoId)
+    public void DeleteTodo(int todoId)
     {
       DeletedEvent newEvent = new DeletedEvent()
       {

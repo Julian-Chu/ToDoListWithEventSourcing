@@ -27,19 +27,19 @@ namespace ToDoList
         Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
       }
 
-      controller.addTodo(new Todo()
+      controller.AddTodo(new Todo()
       {
         Description = "test1"
       });
 
       Task.Delay(1000).Wait();
-      controller.addTodo(new Todo()
+      controller.AddTodo(new Todo()
       {
         Description = "test2"
       });
 
       Task.Delay(1000).Wait();
-      controller.deleteTodo(1);
+      controller.DeleteTodo(1);
 
 
       Console.WriteLine("\nAfter Add 2 todos, and delete todo[1], Show todos");
@@ -49,7 +49,7 @@ namespace ToDoList
       }
       Console.WriteLine("\nAfter undoLast, add , undo, Show todos");
       controller.Undo();
-      controller.addTodo(new  Todo()
+      controller.AddTodo(new  Todo()
       {
               Description = "test3"
       });
