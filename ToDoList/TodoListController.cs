@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ToDoList
 {
   public class TodoListController
   {
-    private List<Todo> TodoRepo;
-    private readonly EventHanlder es;
+    private readonly EventHanlder hanlder;
+    private readonly List<IEvent> eventStore;
 
-    public TodoListController(EventHanlder es)
+    public TodoListController(EventHanlder hanlder, List<IEvent> eventStore)
     {
-      this.es = es;
+      this.hanlder = hanlder;
+      this.eventStore = eventStore;
     }
 
     public void addTodo(Todo todo)
@@ -22,7 +24,8 @@ namespace ToDoList
         Type = EventType.Created,
       };
 
-      es.AddCreatedEvent(newEvent);
+      SaveToEventStore(newEvent);
+      hanlder.Handle(newEvent);
     }
 
     public void deleteTodo(int todoId)
@@ -33,15 +36,31 @@ namespace ToDoList
         TimeStamp = DateTime.Now,
         Type = EventType.Deleted,
       };
+      SaveToEventStore(newEvent);
 
-      es.AddDeletedEvent(newEvent);
+      hanlder.Handle(newEvent);
     }
 
     public void Undo()
     {
-      es.UndoLast();
+      var undoEvent = eventStore.LastOrDefault(o => o.Type != EventType.Undo);
+
+      eventStore.Add(new UndoEvent()
+      {
+              Id = eventStore.Count,
+              Type = EventType.Undo,
+              Data = undoEvent,
+              TimeStamp = DateTime.Now
+      });
+
+      hanlder.Undo(undoEvent);
     }
 
+    private void SaveToEventStore(IEvent newEvent)
+    {
+      newEvent.Id = eventStore.Count;
+      eventStore.Add(newEvent);
+    }
   }
 
   public class Todo

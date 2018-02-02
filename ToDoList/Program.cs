@@ -17,8 +17,9 @@ namespace ToDoList
                           CreatedAt = DateTime.Now
                   }
           });
-      var eventStore = new EventHanlder(todoDb);
-      var controller = new TodoListController(eventStore);
+      var eventHandler = new EventHanlder(todoDb);
+      var eventStore = new List<IEvent>();
+      var controller = new TodoListController(eventHandler, eventStore);
 
       Console.WriteLine("initial todo list");
       foreach (var todo in todoDb)
@@ -38,10 +39,10 @@ namespace ToDoList
       });
 
       Task.Delay(1000).Wait();
-      controller.deleteTodo(0);
+      controller.deleteTodo(1);
 
 
-      Console.WriteLine("\nAfter Add 2 todos, and delete first todo, Show todos");
+      Console.WriteLine("\nAfter Add 2 todos, and delete todo[1], Show todos");
       foreach (var todo in todoDb)
       {
         Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
@@ -60,8 +61,8 @@ namespace ToDoList
         Console.WriteLine($"Todo Id: {todo.Id}, Description:{todo.Description}, Created at: {todo.CreatedAt}");
       }
 
-      Console.WriteLine("\nShow events");
-      foreach (var e in eventStore.GetEvents())
+      Console.WriteLine("\nShow events in Event Store");
+      foreach (var e in eventStore)
       {
         object data;
         if (e.Data is Todo)
